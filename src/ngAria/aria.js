@@ -303,12 +303,22 @@ ngAriaModule.directive('ngShow', ['$aria', function($aria) {
     compile: function(elem, attr) {
       var fn = $parse(attr.ngClick, /* interceptorFn */ null, /* expensiveChecks */ true);
       return function(scope, elem, attr) {
+
+        function isNodeOneOf(elem, nodeTypeArray) {
+          for (var i=0; i < nodeTypeArray.length; i++) {
+            if (elem[0].nodeName === nodeTypeArray[i]) {
+              return true;
+            }
+          }
+        }
+
         if ($aria.config('tabindex') && !elem.attr('tabindex')) {
           elem.attr('tabindex', 0);
         }
 
-        if ($aria.config('bindKeypress') && !attr.ngKeypress) {
+        if ($aria.config('bindKeypress') && !attr.ngKeypress && isNodeOneOf(elem, ['DIV'])) {
           elem.on('keypress', function(event) {
+
             if (event.keyCode === 32 || event.keyCode === 13) {
               scope.$apply(callback);
             }
