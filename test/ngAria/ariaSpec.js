@@ -526,6 +526,13 @@ describe('$aria', function() {
       element.triggerHandler({ type: 'keypress', keyCode: 13 });
       expect(element.text()).toBe('keypress13');
     });
+
+    it('should not bind keypress to non-div elements', function() {
+      compileInput('<button ng-click="event = $event">{{event.type}}{{event.keyCode}}</button>');
+      expect(element.text()).toBe('');
+      element.triggerHandler({ type: 'keypress', keyCode: 13 });
+      expect(element.text()).toBe('');
+    });
   });
 
   describe('actions when bindKeypress set to false', function() {
